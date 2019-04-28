@@ -3,16 +3,12 @@ import { Readable } from 'stream';
 import * as webstoreApi from 'typed-chrome-webstore-api';
 import { ILogMethod } from 'webext-buildtools-builder-types';
 import { LoggerWrapper } from 'webext-buildtools-utils';
+import { IWaitForWebstoreOptions } from '../declarations/waitForWebstoreOptions';
 
 function delay(ms: number): Promise<any> {
     return new Promise(resolve => {
         setTimeout(resolve, ms);
     });
-}
-
-export interface IWaitForWebstoreOptions {
-    checkCount: number;
-    checkIntervalMs: number;
 }
 
 export class ChromeWebstoreApiFacade {

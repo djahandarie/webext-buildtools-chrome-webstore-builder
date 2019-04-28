@@ -1,6 +1,7 @@
 import { PublishStatus, PublishTarget } from 'typed-chrome-webstore-api';
 import { DownloadCrx } from 'typed-chrome-webstore-api';
-import { IWaitForWebstoreOptions } from '../src/chromeWebstoreApiFacade';
+// noinspection TypeScriptPreferShortImport
+import { IWaitForWebstoreOptions } from '../declarations/waitForWebstoreOptions';
 
 export interface IChromeWebstoreApiAccessOptions {
     /**
