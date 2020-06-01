@@ -9,7 +9,7 @@ import { ChromeWebstoreApiFacade } from '../chromeWebstoreApiFacade';
 
 function validatePublishStatus(
     statuses: PublishStatus[],
-    allowedStatuses: Array<PublishStatus | string> =
+    allowedStatuses: (PublishStatus | string)[] =
         [webstoreApi.PublishStatus.OK, webstoreApi.PublishStatus.ITEM_PENDING_REVIEW]
 ) {
     const restrictedStatuses = statuses.filter(

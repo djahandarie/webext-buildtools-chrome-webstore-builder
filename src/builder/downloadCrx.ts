@@ -44,7 +44,7 @@ export async function downloadCrx(
         options.acceptFormat,
         options.platform
     );
-    const waitFor: Array<Promise<any>> = [];
+    const waitFor: Promise<any>[] = [];
     
     if (requireBuffer) {
         const bufferCreating = BufferBuildAsset.createFromStream(readStream);
