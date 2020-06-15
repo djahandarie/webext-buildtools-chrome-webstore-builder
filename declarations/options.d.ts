@@ -1,7 +1,7 @@
 import { PublishStatus, PublishTarget } from 'typed-chrome-webstore-api';
 import { DownloadCrx } from 'typed-chrome-webstore-api';
 // noinspection TypeScriptPreferShortImport
-import { IWaitForWebstoreOptions } from '../declarations/waitForWebstoreOptions';
+import { IWaitForWebstoreOptions } from './waitForWebstoreOptions';
 
 export interface IChromeWebstoreApiAccessOptions {
     /**
@@ -46,7 +46,7 @@ export interface IChromeWebstorePublishOptions {
      * If status is in array, build is considered successful, if not, build() method will throw Error
      * If not specified, 'OK' and 'ITEM_PENDING_REVIEW' will be considered successful
      */
-    allowedStatuses?: Array<PublishStatus | string>;
+    allowedStatuses?: (PublishStatus | string)[];
 
     /**
      * Experimental option due to undocumented Webstore API behaviour
@@ -79,7 +79,7 @@ export interface IChromeWebstoreDownloadCrxOptions {
      * @see typed-chrome-webstore-api/downloadCrx
      * default is ['crx2', crx3']
      */
-    acceptFormat?: Array<DownloadCrx.CrxAcceptFormat | string>;
+    acceptFormat?: (DownloadCrx.CrxAcceptFormat | string)[];
 
     /**
      * Optional param for

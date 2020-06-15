@@ -69,6 +69,7 @@ export class ChromeWebstoreBuilder
 
     // noinspection JSUnusedGlobalSymbols
     public requirePublishedCrxFile(temporary: boolean = false) {
+        // noinspection PointlessBooleanExpressionJS
         this._publishedCrxFileRequirement = !!temporary;
         return this;
     }
@@ -97,12 +98,17 @@ export class ChromeWebstoreBuilder
         }
 
         if ((this._uploadedExtRequired || this._publishedExtRequired) && this._options.apiAccess) {
-            const apiFacade = await ChromeWebstoreApiFacade.authorize(
-                this._options.apiAccess.clientId,
-                this._options.apiAccess.clientSecret,
-                this._options.apiAccess.refreshToken,
-                this._options.extensionId,
-            );
+            let apiFacade: ChromeWebstoreApiFacade|null;
+            try {
+                apiFacade = await ChromeWebstoreApiFacade.authorize(
+                    this._options.apiAccess.clientId,
+                    this._options.apiAccess.clientSecret,
+                    this._options.apiAccess.refreshToken,
+                    this._options.extensionId,
+                );
+            } catch (error) {
+                throw new Error(error.message + ': ' + JSON.stringify(error.response.data));
+            }
             apiFacade.setLogMethod(this._logWrapper.logMethod);
 
             if (this._uploadedExtRequired) {
