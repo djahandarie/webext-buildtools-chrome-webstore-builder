@@ -9,8 +9,7 @@ import { ChromeWebstoreApiFacade } from '../chromeWebstoreApiFacade';
 
 function validatePublishStatus(
     statuses: PublishStatus[],
-    allowedStatuses: (PublishStatus | string)[] =
-        [webstoreApi.PublishStatus.OK, webstoreApi.PublishStatus.ITEM_PENDING_REVIEW]
+    allowedStatuses: (PublishStatus | string)[]
 ) {
     const restrictedStatuses = statuses.filter(
         status => !allowedStatuses.includes(status)
@@ -19,7 +18,6 @@ function validatePublishStatus(
     if (restrictedStatuses.length > 0) {
         throw new Error(`Publish statuses ${restrictedStatuses.join(', ')} are not allowed`);
     }
-
 }
 
 export async function publishExt(
@@ -50,8 +48,10 @@ export async function publishExt(
         }
     }
 
+    const allowedStatuses = options.allowedStatuses ||
+        [webstoreApi.PublishStatus.OK, webstoreApi.PublishStatus.ITEM_PENDING_REVIEW];
     if (publishResult && Array.isArray(publishResult.status)) {
-        validatePublishStatus(publishResult.status, options.allowedStatuses);
+        validatePublishStatus(publishResult.status, allowedStatuses);
     }
     
     return new ChromeWebstorePublishedExtAsset({

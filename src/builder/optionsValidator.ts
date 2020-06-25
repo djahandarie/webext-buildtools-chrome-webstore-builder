@@ -34,7 +34,7 @@ export class OptionsValidator {
 
         if (res.missedFields.length > 0) {
             const fields = res.missedFields.join(', ');
-            throw new Error(`Following options fields are not set o have invalid value: ${fields}`);
+            throw new Error(`Following options fields are not set or have invalid value: ${fields}`);
         }
     }
 
@@ -76,6 +76,7 @@ export class OptionsValidator {
         }
 
         if (options.publish &&
+            options.publish.allowedStatuses !== undefined &&
             (!Array.isArray(options.publish.allowedStatuses) || options.publish.allowedStatuses.length === 0)
         ) {
             r.missedFields.push(`publish.allowedPublishStatuses`);
