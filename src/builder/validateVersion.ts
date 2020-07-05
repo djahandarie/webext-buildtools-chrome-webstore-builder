@@ -18,14 +18,14 @@ export function validateVersion(
 
     const currentVersion = oldWebstoreResource.crxVersion;
     if (!currentVersion) {
-        return false;
+        return true;
     }
 
     if (versions.validate(currentVersion)) {
         logWrapper.info(`Version of currently published extension is '${currentVersion}'`);
     } else {
         logWrapper.warn(`Invalid semver version of published crx: '${currentVersion}'`);
-        return false;
+        return true;
     }
 
     if (versions.compare(manifestVersion, currentVersion, '=')) {

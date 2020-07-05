@@ -132,19 +132,21 @@ export class ChromeWebstoreBuilder
 
                 oldExtensionResource = await apiFacade.getCurrentlyUploadedResource();
 
-                validateVersion(
+                const shouldUpload = validateVersion(
                     this._inputManifest.version,
                     oldExtensionResource,
                     throwIfVersionAlreadyUploaded,
                     this._logWrapper,
                 );
 
-                newExtensionResource = await upload(
-                    this._inputZipBuffer as Buffer,
-                    this._options.upload || {},
-                    apiFacade,
-                    this._inputManifest
-                );
+                if (shouldUpload) {
+                    newExtensionResource = await upload(
+                        this._inputZipBuffer as Buffer,
+                        this._options.upload || {},
+                        apiFacade,
+                        this._inputManifest
+                    );
+                }
 
                 result.getAssets().uploadedExt = new ChromeWebstoreUploadedExtAsset({
                     oldVersion: oldExtensionResource,
