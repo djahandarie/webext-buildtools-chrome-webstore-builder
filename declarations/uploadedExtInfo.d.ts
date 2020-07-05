@@ -1,7 +1,9 @@
-import * as webstoreApi from 'typed-chrome-webstore-api';
+import { WebstoreResource } from 'typed-chrome-webstore-api';
 
 export interface IUploadedExtInfo {
     extId: string;
     extVersion?: string;
-    apiResource?: webstoreApi.IWebstoreResource;
+    apiResource?: WebstoreResource;
 }
+
+export { WebstoreResource } from 'typed-chrome-webstore-api';
