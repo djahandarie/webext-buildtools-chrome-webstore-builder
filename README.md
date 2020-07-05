@@ -27,6 +27,7 @@ const options = { ... }; // see description below
 const logMethod = console.log;
 const builder = new ChromeWebstoreBuilder(options, logMethod);
 
+// You can omit this, manifest will be extracted from zip file
 builder.setInputManifest(await fs.readJson('./ext_dir/package.json'));
 builder.setInputZipBuffer(await fs.read('./packed.zip'));
 
@@ -49,8 +50,8 @@ To find out how to obtain them you can read:
 * [How to generate Google API keys](https://github.com/DrewML/chrome-webstore-upload/blob/master/How%20to%20generate%20Google%20API%20keys.md)
 
 ### Inputs
-1. **`setInputManifest(...)`**. Object with parsed extension's `package.json`. Required to produce `update.xml` file
-2. **`setInputZipBuffer(...)`**. Buffer with zipped extension dir. Required to produce packed `crx` file
+1. **`setInputManifest(...)`**. Optional. Object with parsed extension's `package.json`. Will be extracted from zip if not specified.
+2. **`setInputZipBuffer(...)`**. Buffer with zipped extension dir. Required to upload extension.
 
 You can use [webext-buildtools-dir-reader-mw](https://www.npmjs.com/package/webext-buildtools-dir-reader-mw)
 to generate needed inputs from extension directory.

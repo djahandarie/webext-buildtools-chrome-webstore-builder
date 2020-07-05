@@ -1,17 +1,16 @@
 import * as webstoreApi from 'typed-chrome-webstore-api';
 import { IChromeWebstoreUploadOptions } from '../../declarations/options';
 // noinspection TypeScriptPreferShortImport
-import { ChromeWebstoreUploadedExtAsset } from '../buildResult';
 import { ChromeWebstoreApiFacade } from '../chromeWebstoreApiFacade';
-import { IWebextManifest } from './webextManifest';
 import { UploadInReviewError } from "../errors";
+import { IManifestObject } from 'webext-buildtools-utils';
 import { WebstoreResource } from "typed-chrome-webstore-api";
 
 export async function upload(
     inputZipBuffer: Buffer,
     options: IChromeWebstoreUploadOptions,
     apiFacade: ChromeWebstoreApiFacade,
-    inputManifest?: IWebextManifest,
+    inputManifest?: IManifestObject,
 ): Promise<WebstoreResource> {
     let uploadResult: webstoreApi.WebstoreResource;
     try {

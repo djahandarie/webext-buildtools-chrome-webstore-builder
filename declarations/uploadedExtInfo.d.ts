@@ -4,11 +4,11 @@ export interface IUploadedExtInfo {
     /**
      * Extension version before upload
      */
-    oldVersion?: WebstoreResource;
+    oldVersion: WebstoreResource;
     /**
      * Extension version after upload
      */
-    newVersion?: WebstoreResource;
+    newVersion: WebstoreResource;
 }
 
 export { WebstoreResource } from 'typed-chrome-webstore-api';

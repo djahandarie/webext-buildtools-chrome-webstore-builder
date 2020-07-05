@@ -1,12 +1,11 @@
 import { ISimpleBuilder } from 'webext-buildtools-builder-types';
-import { AbstractSimpleBuilder } from 'webext-buildtools-utils';
+import { AbstractSimpleBuilder, extractManifestFromZipBuffer, IManifestObject } from 'webext-buildtools-utils';
 import { IChromeWebstoreOptions } from '../declarations/options';
 import { downloadCrx } from './builder/downloadCrx';
 import { OptionsValidator } from './builder/optionsValidator';
 import { publishExt } from './builder/publish';
 import { upload } from './builder/upload';
 import { validateVersion } from './builder/validateVersion';
-import { IWebextManifest } from './builder/webextManifest';
 import { ChromeWebstoreBuildResult, ChromeWebstoreUploadedExtAsset } from './buildResult';
 import { ChromeWebstoreApiFacade } from './chromeWebstoreApiFacade';
 import { WebstoreResource } from "typed-chrome-webstore-api";
@@ -22,7 +21,7 @@ export class ChromeWebstoreBuilder
     public static readonly TARGET_NAME = 'chrome-webstore-deploy';
 
     protected _inputZipBuffer?: Buffer;
-    protected _inputManifest?: IWebextManifest;
+    protected _inputManifest?: IManifestObject;
     protected _uploadedExtRequired: boolean = false;
     protected _publishedExtRequired: boolean = false;
     protected _publishedCrxBufferRequired: boolean = false;
@@ -39,7 +38,7 @@ export class ChromeWebstoreBuilder
         return this;
     }
 
-    public setInputManifest(manifest: IWebextManifest): this {
+    public setInputManifest(manifest: IManifestObject): this {
         if (!manifest.name || !manifest.version) {
             throw Error('Invalid manifest object, id and name fields are required');
         }
@@ -115,19 +114,30 @@ export class ChromeWebstoreBuilder
             apiFacade.setLogMethod(this._logWrapper.logMethod);
 
             if (this._uploadedExtRequired) {
-                if (this._inputManifest && this._inputManifest.version) {
-                    const throwIfVersionAlreadyUploaded = !(this._options.upload &&
-                        this._options.upload.throwIfVersionAlreadyUploaded === false);
-
-                    oldExtensionResource = await apiFacade.getCurrentlyUploadedResource();
-
-                    validateVersion(
-                        this._inputManifest.version,
-                        oldExtensionResource,
-                        throwIfVersionAlreadyUploaded,
-                        this._logWrapper,
-                    );
+                if (!this._inputManifest) {
+                    if (!this._inputZipBuffer) {
+                        throw new Error(
+                            'Input manifest is required upload extension. Neither manifest or zip buffer are set'
+                        );
+                    }
+                    this._logWrapper.info('Manifest input is not set, reading from zip...');
+                    this._inputManifest = await extractManifestFromZipBuffer(this._inputZipBuffer);
+                    this._logWrapper.info(
+                        `Manifest extracted. Extension name: '${this._inputManifest.name}', ` +
+                        `version: ${this._inputManifest.version}`);
                 }
+
+                const throwIfVersionAlreadyUploaded = !(this._options.upload &&
+                    this._options.upload.throwIfVersionAlreadyUploaded === false);
+
+                oldExtensionResource = await apiFacade.getCurrentlyUploadedResource();
+
+                validateVersion(
+                    this._inputManifest.version,
+                    oldExtensionResource,
+                    throwIfVersionAlreadyUploaded,
+                    this._logWrapper,
+                );
 
                 newExtensionResource = await upload(
                     this._inputZipBuffer as Buffer,
@@ -143,7 +153,7 @@ export class ChromeWebstoreBuilder
             }
 
             if (this._publishedExtRequired) {
-                let versionToPublish: string|undefined = undefined;
+                let versionToPublish: string|undefined;
                 if (newExtensionResource && newExtensionResource.crxVersion) {
                     versionToPublish = newExtensionResource.crxVersion;
                 } else if (oldExtensionResource && oldExtensionResource.crxVersion) {
