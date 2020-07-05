@@ -99,17 +99,23 @@ export class ChromeWebstoreBuilder
 
         let oldExtensionResource: WebstoreResource|undefined;
         let newExtensionResource: WebstoreResource|undefined;
-        if ((this._uploadedExtRequired || this._publishedExtRequired) && this._options.apiAccess) {
+        if (this._uploadedExtRequired || this._publishedExtRequired) {
             let apiFacade: ChromeWebstoreApiFacade|null;
-            try {
-                apiFacade = await ChromeWebstoreApiFacade.authorize(
-                    this._options.apiAccess.clientId,
-                    this._options.apiAccess.clientSecret,
-                    this._options.apiAccess.refreshToken,
-                    this._options.extensionId,
-                );
-            } catch (error) {
-                throw new Error(error.message + ': ' + JSON.stringify(error.response.data));
+            if (this._options.accessToken) {
+                apiFacade = new ChromeWebstoreApiFacade(this._options.accessToken, this._options.extensionId);
+            } else if (this._options.apiAccess) {
+                try {
+                    apiFacade = await ChromeWebstoreApiFacade.authorize(
+                        this._options.apiAccess.clientId,
+                        this._options.apiAccess.clientSecret,
+                        this._options.apiAccess.refreshToken,
+                        this._options.extensionId,
+                    );
+                } catch (error) {
+                    throw new Error(error.message + ': ' + JSON.stringify(error.response.data));
+                }
+            } else {
+                throw new Error('Neither accessToken or apiAccess options are set');
             }
             apiFacade.setLogMethod(this._logWrapper.logMethod);
 

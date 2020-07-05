@@ -26,7 +26,7 @@ export class ChromeWebstoreApiFacade {
     protected readonly _extensionId: string;
     protected readonly _logWrapper: LoggerWrapper;
 
-    protected constructor(token: string, extensionId: string) {
+    public constructor(token: string, extensionId: string) {
         this._api = new webstoreApi.WebstoreApi(token);
         this._extensionId = extensionId;
         this._logWrapper = new LoggerWrapper();

@@ -101,13 +101,13 @@ export interface IChromeWebstoreOptions {
      * Your extension id in Chrome Web Store, required for all outputs
      */
     extensionId: string;
-    
+
+    accessToken?: string;
+
     /** 
      * Required for uploadExt and publishExt outputs 
      */
     apiAccess?: IChromeWebstoreApiAccessOptions;
-
-
 
     /**
      * For uploadExt output, optional

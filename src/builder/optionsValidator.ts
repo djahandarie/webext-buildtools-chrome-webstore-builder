@@ -46,8 +46,8 @@ export class OptionsValidator {
         }
 
         if (this._uploadedExtRequired || this._publishedExtRequired) {
-            if (!options.apiAccess) {
-                r.missedFields.push('apiAccess')
+            if (options.accessToken && !options.apiAccess) {
+                r.missedFields.push('apiAccess or accessToken')
             }
             else {
                 const missed = ['clientId', 'clientSecret', 'refreshToken']

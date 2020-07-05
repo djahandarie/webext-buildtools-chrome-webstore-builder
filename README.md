@@ -15,7 +15,7 @@ To read what are *webext-buildtools* and *builders* go to
 Builder is based on [typed-chrome-webstore-api](https://github.com/cardinalby/typed-chrome-webstore-api) 
 package and allows you to upload and publish your Web Extension to Chrome Web Store and then download published crx file.
 
-Builder doesn't allow publish new extension, only update existing (specified by `extensionId` in options) 
+Builder doesn't allow publish a new extension, only update the existing one (specified by `extensionId` in options) 
 with new version.  
 
 ### Usage example
@@ -49,6 +49,8 @@ To find out how to obtain them you can read:
 * [Using the Chrome Web Store Publish API](https://developer.chrome.com/webstore/using_webstore_api) 
 * [How to generate Google API keys](https://github.com/DrewML/chrome-webstore-upload/blob/master/How%20to%20generate%20Google%20API%20keys.md)
 
+Alternatively, you can directly set valid `options.accessToken` (be sure it's not expired). 
+
 ### Inputs
 1. **`setInputManifest(...)`**. Optional. Object with parsed extension's `package.json`. Will be extracted from zip if not specified.
 2. **`setInputZipBuffer(...)`**. Buffer with zipped extension dir. Required to upload extension.
@@ -61,7 +63,7 @@ to generate needed inputs from extension directory.
 #### uploaded ext
 Require to upload extension to Chrome Web Store (first step before publish)<br>
 
-*Required options:* `extensionId`, `apiAccess` <br>
+*Required options:* `extensionId`, `apiAccess` or `accessToken` <br>
 *Require methods:* `requireUploadedExt()` <br>
 *Assets:* <br> 
 `const uploadInfo = buildResult.getAssets().uploadedExt.getValue()`
@@ -72,7 +74,7 @@ Contains information about extension before and after upload
 Require to publish extension to Chrome Web Store (second step). 
 Normally is used with `requireUploadedExt()`, but can be used to publish already uploaded version <br>
 
-*Required options:* `extensionId`, `apiAccess` <br>
+*Required options:* `extensionId`, `apiAccess` or `accessToken`<br>
 *Require methods:* `requirePublishedExt()` <br>
 *Assets:* <br> 
 `const publishInfo = buildResult.getAssets().publishedExt.getValue()` 
