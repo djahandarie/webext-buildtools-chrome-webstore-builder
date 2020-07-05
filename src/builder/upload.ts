@@ -5,13 +5,14 @@ import { ChromeWebstoreUploadedExtAsset } from '../buildResult';
 import { ChromeWebstoreApiFacade } from '../chromeWebstoreApiFacade';
 import { IWebextManifest } from './webextManifest';
 import { UploadInReviewError } from "../errors";
+import { WebstoreResource } from "typed-chrome-webstore-api";
 
 export async function upload(
     inputZipBuffer: Buffer,
     options: IChromeWebstoreUploadOptions,
     apiFacade: ChromeWebstoreApiFacade,
     inputManifest?: IWebextManifest,
-): Promise<ChromeWebstoreUploadedExtAsset> {
+): Promise<WebstoreResource> {
     let uploadResult: webstoreApi.WebstoreResource;
     try {
         uploadResult = await apiFacade.uploadExisting(
@@ -23,15 +24,11 @@ export async function upload(
     }
 
     if (uploadResult.uploadState === webstoreApi.UploadState.SUCCESS) {
-        let version = uploadResult.crxVersion;
-        if (!version && inputManifest && inputManifest.version) {
-            version = inputManifest.version;
+        if (!uploadResult.crxVersion && inputManifest) {
+            uploadResult.crxVersion = inputManifest.version;
         }
-        return new ChromeWebstoreUploadedExtAsset({
-            extId: uploadResult.id,
-            extVersion: version,
-            apiResource: uploadResult
-        });
+
+        return uploadResult;
     }
 
     const uploadErrorMsg = "Can't upload extension. " + (

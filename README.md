@@ -63,7 +63,8 @@ Require to upload extension to Chrome Web Store (first step before publish)<br>
 *Required options:* `extensionId`, `apiAccess` <br>
 *Require methods:* `requireUploadedExt()` <br>
 *Assets:* <br> 
-`const uploadInfo = buildResult.getAssets().uploadedExt.getValue()` 
+`const uploadInfo = buildResult.getAssets().uploadedExt.getValue()`
+Contains information about extension before and after upload
 [upload info definition](declarations/uploadedExtInfo.d.ts)
 
 #### published ext

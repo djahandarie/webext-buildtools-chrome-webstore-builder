@@ -9,6 +9,7 @@ import { validateVersion } from './builder/validateVersion';
 import { IWebextManifest } from './builder/webextManifest';
 import { ChromeWebstoreBuildResult, ChromeWebstoreUploadedExtAsset } from './buildResult';
 import { ChromeWebstoreApiFacade } from './chromeWebstoreApiFacade';
+import { WebstoreResource } from "typed-chrome-webstore-api";
 
 // noinspection JSUnusedGlobalSymbols
 /**
@@ -97,6 +98,8 @@ export class ChromeWebstoreBuilder
             return result;
         }
 
+        let oldExtensionResource: WebstoreResource|undefined;
+        let newExtensionResource: WebstoreResource|undefined;
         if ((this._uploadedExtRequired || this._publishedExtRequired) && this._options.apiAccess) {
             let apiFacade: ChromeWebstoreApiFacade|null;
             try {
@@ -116,39 +119,43 @@ export class ChromeWebstoreBuilder
                     const throwIfVersionAlreadyUploaded = !(this._options.upload &&
                         this._options.upload.throwIfVersionAlreadyUploaded === false);
 
-                    const currentlyUploaded = await validateVersion(
+                    oldExtensionResource = await apiFacade.getCurrentlyUploadedResource();
+
+                    validateVersion(
                         this._inputManifest.version,
+                        oldExtensionResource,
                         throwIfVersionAlreadyUploaded,
-                        apiFacade,
                         this._logWrapper,
                     );
+                }
 
-                    if (!throwIfVersionAlreadyUploaded && currentlyUploaded) {
-                        result.getAssets().uploadedExt = new ChromeWebstoreUploadedExtAsset({
-                            extId: currentlyUploaded.id,
-                            extVersion: currentlyUploaded.crxVersion,
-                            apiResource: currentlyUploaded
-                        });
-                    }
-                }
-                if (!result.getAssets().uploadedExt) {
-                    result.getAssets().uploadedExt = await upload(
-                        this._inputZipBuffer as Buffer,
-                        this._options.upload || {},
-                        apiFacade,
-                        this._inputManifest
-                    );
-                }
+                newExtensionResource = await upload(
+                    this._inputZipBuffer as Buffer,
+                    this._options.upload || {},
+                    apiFacade,
+                    this._inputManifest
+                );
+
+                result.getAssets().uploadedExt = new ChromeWebstoreUploadedExtAsset({
+                    oldVersion: oldExtensionResource,
+                    newVersion: newExtensionResource
+                });
             }
 
             if (this._publishedExtRequired) {
-                const uploadedExtAsset = result.getAssets().uploadedExt;
+                let versionToPublish: string|undefined = undefined;
+                if (newExtensionResource && newExtensionResource.crxVersion) {
+                    versionToPublish = newExtensionResource.crxVersion;
+                } else if (oldExtensionResource && oldExtensionResource.crxVersion) {
+                    versionToPublish = oldExtensionResource.crxVersion;
+                }
+
                 result.getAssets().publishedExt = await publishExt(
                     this._options.extensionId,
                     this._options.publish || {},
                     this._logWrapper,
                     apiFacade,
-                    uploadedExtAsset ? uploadedExtAsset.getValue().extVersion : undefined
+                    versionToPublish
                 )
             }
         }
@@ -166,6 +173,4 @@ export class ChromeWebstoreBuilder
 
         return Promise.resolve(result);
     }
-
-
 }

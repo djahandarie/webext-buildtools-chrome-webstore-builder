@@ -6,6 +6,7 @@ export class ChromeWebstoreUploadedExtAsset extends BasicTypeBuildAsset<IUploade
 export class ChromeWebstorePublishedExtAsset extends BasicTypeBuildAsset<IPublishedExtInfo> {}
 
 export class ChromeWebstoreBuildResult extends BaseBuildResult<{
+    webstoreExt?: ChromeWebstoreUploadedExtAsset;
     uploadedExt?: ChromeWebstoreUploadedExtAsset;
     publishedExt?: ChromeWebstorePublishedExtAsset;
     publishedCrxBuffer?: BufferBuildAsset;
