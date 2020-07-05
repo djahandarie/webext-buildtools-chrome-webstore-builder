@@ -4,6 +4,7 @@ import { IChromeWebstoreUploadOptions } from '../../declarations/options';
 import { ChromeWebstoreUploadedExtAsset } from '../buildResult';
 import { ChromeWebstoreApiFacade } from '../chromeWebstoreApiFacade';
 import { IWebextManifest } from './webextManifest';
+import { UploadInReviewError } from "../errors";
 
 export async function upload(
     inputZipBuffer: Buffer,
@@ -11,7 +12,7 @@ export async function upload(
     apiFacade: ChromeWebstoreApiFacade,
     inputManifest?: IWebextManifest,
 ): Promise<ChromeWebstoreUploadedExtAsset> {
-    let uploadResult: webstoreApi.IWebstoreResource;
+    let uploadResult: webstoreApi.WebstoreResource;
     try {
         uploadResult = await apiFacade.uploadExisting(
             inputZipBuffer as Buffer,
@@ -33,10 +34,16 @@ export async function upload(
         });
     }
 
-    const uploadErrorMsg = Array.isArray(uploadResult.itemError)
-        ? uploadResult.itemError
-            .map(err => err.error_detail)
-            .join('. ')
-        : `Upload has ${uploadResult.uploadState} state`;
-    throw new Error(`Can't upload extension. ${uploadErrorMsg}`);
+    const uploadErrorMsg = "Can't upload extension. " + (
+        Array.isArray(uploadResult.itemError)
+            ? uploadResult.itemError
+                .map(err => err.error_detail)
+                .join('. ')
+            : `Upload has ${uploadResult.uploadState} state`
+    );
+
+    if (uploadResult.isFailedBecauseOfPendingReview()) {
+        throw new UploadInReviewError(uploadErrorMsg);
+    }
+    throw new Error(uploadErrorMsg);
 }

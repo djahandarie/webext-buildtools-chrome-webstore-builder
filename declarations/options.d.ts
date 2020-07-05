@@ -32,6 +32,13 @@ export interface IChromeWebstoreUploadOptions {
      * method will throw an exception
      */
     waitForSuccess?: IWaitForWebstoreOptions;
+
+    /**
+     * If true or not specified: if the same version is already uploaded throw an UploadVersionValidationError
+     * If false, do not repeat upload, just put information about uploaded version to the output asset and continue
+     * @default true
+     */
+    throwIfVersionAlreadyUploaded?: boolean;
 }
 
 export interface IChromeWebstorePublishOptions {
@@ -99,6 +106,8 @@ export interface IChromeWebstoreOptions {
      * Required for uploadExt and publishExt outputs 
      */
     apiAccess?: IChromeWebstoreApiAccessOptions;
+
+
 
     /**
      * For uploadExt output, optional

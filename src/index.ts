@@ -6,3 +6,4 @@ export * from '../declarations/uploadedExtInfo';
 export * from '../declarations/publishedExtInfo';
 export * from '../declarations/waitForWebstoreOptions';
 export * from './buildResult';
+export * from './errors';

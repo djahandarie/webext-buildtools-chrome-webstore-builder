@@ -86,3 +86,13 @@ separately to download crx file for `extensionId` specified in options.
 *Assets:* <br>
 `const crxFilePath = buildResult.getAssets().publishedCrxFile.getValue()`<br>
 `const crxBuffer = buildResult.getAssets().publishedCrxBuffer.getValue()`
+
+### Errors
+`builder.build()` call can be rejected with general `Error` or the following specific errors if 
+extension upload was required:
+* `InvalidManifestVersionError` if manifest file has invalid extension version.
+* `NewerVersionAlreadyUploadedError` if currently uploaded version is greater than the version in 
+the extension manifest.
+* `SameVersionAlreadyUploadedError` if currently uploaded version equals to the version in 
+the extension manifest.
+* `UploadInReviewError` if upload failed due to item currently in the review state.

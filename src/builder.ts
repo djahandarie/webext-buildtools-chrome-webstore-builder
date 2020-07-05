@@ -7,7 +7,7 @@ import { publishExt } from './builder/publish';
 import { upload } from './builder/upload';
 import { validateVersion } from './builder/validateVersion';
 import { IWebextManifest } from './builder/webextManifest';
-import { ChromeWebstoreBuildResult } from './buildResult';
+import { ChromeWebstoreBuildResult, ChromeWebstoreUploadedExtAsset } from './buildResult';
 import { ChromeWebstoreApiFacade } from './chromeWebstoreApiFacade';
 
 // noinspection JSUnusedGlobalSymbols
@@ -113,14 +113,32 @@ export class ChromeWebstoreBuilder
 
             if (this._uploadedExtRequired) {
                 if (this._inputManifest && this._inputManifest.version) {
-                    await validateVersion(this._inputManifest.version, apiFacade, this._logWrapper);
+                    const throwIfVersionAlreadyUploaded = !(this._options.upload &&
+                        this._options.upload.throwIfVersionAlreadyUploaded === false);
+
+                    const currentlyUploaded = await validateVersion(
+                        this._inputManifest.version,
+                        throwIfVersionAlreadyUploaded,
+                        apiFacade,
+                        this._logWrapper,
+                    );
+
+                    if (!throwIfVersionAlreadyUploaded && currentlyUploaded) {
+                        result.getAssets().uploadedExt = new ChromeWebstoreUploadedExtAsset({
+                            extId: currentlyUploaded.id,
+                            extVersion: currentlyUploaded.crxVersion,
+                            apiResource: currentlyUploaded
+                        });
+                    }
                 }
-                result.getAssets().uploadedExt = await upload(
-                    this._inputZipBuffer as Buffer,
-                    this._options.upload || {},
-                    apiFacade,
-                    this._inputManifest
-                );
+                if (!result.getAssets().uploadedExt) {
+                    result.getAssets().uploadedExt = await upload(
+                        this._inputZipBuffer as Buffer,
+                        this._options.upload || {},
+                        apiFacade,
+                        this._inputManifest
+                    );
+                }
             }
 
             if (this._publishedExtRequired) {

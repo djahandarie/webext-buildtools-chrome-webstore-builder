@@ -36,18 +36,18 @@ export class ChromeWebstoreApiFacade {
         this._logWrapper.logMethod = logMethod;
     }
 
-    public async getCurrentVersion(): Promise<string|undefined> {
+    public async getCurrentlyUploadedResource(): Promise<webstoreApi.WebstoreResource> {
         this._logWrapper.info('Loading information about current ext version...');
         const current = await this._api.getUpload(this._extensionId);
         this._logWrapper.info('Finished: %o', current);
 
-        return current.crxVersion;
+        return current;
     }
 
     public async uploadExisting(
         readStream: Buffer | Readable,
         waitForSuccess?: IWaitForWebstoreOptions
-    ): Promise<webstoreApi.IWebstoreResource> {
+    ): Promise<webstoreApi.WebstoreResource> {
         this._logWrapper.info(`Uploading ${this._extensionId} extension...`);
         let result;
         try {
