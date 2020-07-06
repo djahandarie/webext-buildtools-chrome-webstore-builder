@@ -9,6 +9,7 @@ import { WebstoreResource } from "typed-chrome-webstore-api";
 export async function upload(
     inputZipBuffer: Buffer,
     options: IChromeWebstoreUploadOptions,
+    currentWebstoreVersion: string|undefined,
     apiFacade: ChromeWebstoreApiFacade,
     inputManifest?: IManifestObject,
 ): Promise<WebstoreResource> {
@@ -39,7 +40,7 @@ export async function upload(
     );
 
     if (uploadResult.isFailedBecauseOfPendingReview()) {
-        throw new UploadInReviewError(uploadErrorMsg);
+        throw new UploadInReviewError(uploadErrorMsg, currentWebstoreVersion);
     }
     throw new Error(uploadErrorMsg);
 }

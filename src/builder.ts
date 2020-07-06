@@ -149,8 +149,9 @@ export class ChromeWebstoreBuilder
                     newExtensionResource = await upload(
                         this._inputZipBuffer as Buffer,
                         this._options.upload || {},
+                        oldExtensionResource.crxVersion,
                         apiFacade,
-                        this._inputManifest
+                        this._inputManifest,
                     );
                 }
 
