@@ -10,5 +10,3 @@ export interface IUploadedExtInfo {
      */
     newVersion?: WebstoreResource;
 }
-
-export { WebstoreResource } from 'typed-chrome-webstore-api';

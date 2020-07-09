@@ -9,3 +9,4 @@ export * from './buildResult';
 export * from './errors';
 
 export { IManifestObject } from 'webext-buildtools-utils';
+export { WebstoreResource } from 'typed-chrome-webstore-api';
