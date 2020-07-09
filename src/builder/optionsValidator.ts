@@ -49,7 +49,7 @@ export class OptionsValidator {
             if (!options.accessToken && !options.apiAccess) {
                 r.missedFields.push('apiAccess or accessToken')
             }
-            else {
+            else if (typeof options.apiAccess === 'object') {
                 const missed = ['clientId', 'clientSecret', 'refreshToken']
                     .filter(field => typeof (options.apiAccess as any)[field] !== 'string')
                     .map(field => `apiAccess.${field}`);
