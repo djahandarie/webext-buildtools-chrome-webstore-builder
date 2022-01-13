@@ -30,7 +30,7 @@
   "dependencies": {
     "fs-extra": "^7.0.1",
     "compare-versions": "^3.6.0",
-    "typed-chrome-webstore-api": "^0.4.12",
+    "typed-chrome-webstore-api": "^0.4.13",
     "webext-buildtools-utils": "^1.0.14"
   },
   "devDependencies": {
