@@ -56,7 +56,7 @@ export class ChromeWebstoreApiFacade {
         catch (error) {
             const axiosError = error as AxiosError;
             if (axiosError.response && axiosError.response.data) {
-                this._logWrapper.info(`Error response body: %o'`, error.response.data);
+                this._logWrapper.info(`Error response body: %o'`, axiosError.response.data);
             }
             throw error;
         }
@@ -78,7 +78,7 @@ export class ChromeWebstoreApiFacade {
                     return result;
                 }
             } catch (error) {
-                this._logWrapper.error(error.toString());
+                this._logWrapper.error(String(error));
             }
         }
 

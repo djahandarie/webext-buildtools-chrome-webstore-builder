@@ -1,6 +1,6 @@
 {
   "name": "webext-buildtools-chrome-webstore-builder",
-  "version": "1.1.15",
+  "version": "1.1.16",
   "description": "webext-buildtools builder for deploying to Chrome Webstore. Based on chrome-webstore-upload",
   "main": "dist",
   "keywords": [
@@ -28,27 +28,20 @@
     "LICENSE"
   ],
   "dependencies": {
-    "fs-extra": "^7.0.1",
     "compare-versions": "^3.6.0",
     "typed-chrome-webstore-api": "^0.4.14",
-    "webext-buildtools-utils": "^1.0.14"
+    "webext-buildtools-utils": "^1.0.15"
   },
   "devDependencies": {
-    "webext-buildtools-builder-types": "^1.0.10",
-    "@types/node": "^10.12.20",
-    "@types/fs-extra": "^5.0.5",
+    "webext-buildtools-builder-types": "^1.0.11",
+    "@types/node": "^16.11.35",
     "@types/compare-versions": "^3.3.0",
     "@types/axios": "^0.14.0",
-    "tslint": "^6.1.2",
-    "tslint-config-prettier": "^1.17.0",
-    "typescript": "^3.9.10"
+    "typescript": "^4.6.4"
   },
   "scripts": {
     "build": "tsc",
-    "lint": "tslint -p tsconfig.json",
     "prepare": "npm run build",
-    "prepublishOnly": "npm run lint",
-    "preversion": "npm run lint",
     "version": "git add -A src",
     "postversion": "git push && git push --tags"
   }

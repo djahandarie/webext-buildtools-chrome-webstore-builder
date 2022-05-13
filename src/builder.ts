@@ -9,6 +9,7 @@ import { validateVersion } from './builder/validateVersion';
 import { ChromeWebstoreBuildResult, ChromeWebstoreUploadedExtAsset } from './buildResult';
 import { ChromeWebstoreApiFacade } from './chromeWebstoreApiFacade';
 import { WebstoreResource } from "typed-chrome-webstore-api";
+import {AxiosError} from "axios";
 
 // noinspection JSUnusedGlobalSymbols
 /**
@@ -112,7 +113,12 @@ export class ChromeWebstoreBuilder
                         this._options.extensionId,
                     );
                 } catch (error) {
-                    throw new Error(error.message + ': ' + JSON.stringify(error.response.data));
+                    const axiosError = error as AxiosError;
+                    let responseData = undefined;
+                    if (axiosError?.response?.data) {
+                        responseData = JSON.stringify(axiosError.response.data);
+                    }
+                    throw new Error(String(error) + (responseData ? ': ' + responseData : ''));
                 }
             } else {
                 throw new Error('Neither accessToken or apiAccess options are set');

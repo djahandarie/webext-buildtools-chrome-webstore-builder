@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.com/cardinalby/webext-buildtools-chrome-webstore-builder.svg?branch=master)](https://travis-ci.com/cardinalby/webext-buildtools-chrome-webstore-builder)
+[![npm-publish](https://github.com/cardinalby/webext-buildtools-chrome-webstore-builder/actions/workflows/npm-publish.yml/badge.svg)](https://github.com/cardinalby/webext-buildtools-chrome-webstore-builder/actions/workflows/npm-publish.yml)
+
 ### Introduction
 *webext-buildtools* builder which allows you to upload, publish and download crx file from Chrome Web Store.
 

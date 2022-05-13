@@ -20,7 +20,7 @@ export async function upload(
             options.waitForSuccess
         );
     } catch (error) {
-        throw new Error(`Can't upload extension. ${error.toString()}`);
+        throw new Error(`Can't upload extension. ${String(error)}`);
     }
 
     if (uploadResult.uploadState === webstoreApi.UploadState.SUCCESS) {
